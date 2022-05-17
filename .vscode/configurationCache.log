@@ -1,0 +1,1 @@
+{"buildTargets":[".PHONY","build","clean","deps-cleancache","deps-reset","deps-upgrade","docker","down-local","local","logs-local","run","run-linter","test","tidy"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

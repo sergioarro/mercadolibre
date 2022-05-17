@@ -1,0 +1,381 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+make: *** No rule to make target `all'.  Stop.
+
+
+# Make data base, printed on Sun May 15 19:06:04 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+ 
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+LC_CTYPE = UTF-8
+# environment
+VSCODE_LOG_NATIVE = false
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+CPPFLAGS = -I/usr/local/opt/php@7.3/include
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/searro/repos/mercadolibre/mercadolibre
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"es-419","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/pd/303dbgt57d1249qb5pgp2cnw0000gn/T/vscode-ipc-9bc7b317-8fff-4113-ad9c-8227734a9cbf.sock
+# environment
+VSCODE_CWD = /Users/searro/repos/mercadolibre/mercadolibre
+# environment
+PG_HOME = /usr/local/Cellar/postgresql/13.1
+# environment
+GOPROXY = https://proxy.golang.org,direct
+# environment
+PATH = /usr/local/share/python:/usr/local/bin:/usr/local/opt/php@7.3/bin:/Users/searro/Library/Android/sdk/build-tools/30.0.3:/Users/searro/Library/Android/sdk/platform-tools:/usr/local/opt/php@5.6/sbin:/usr/local/opt/php@5.6/bin:/usr/local/opt/php@7.3/sbin:/usr/local/opt/php@7.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin:/Library/Apple/usr/bin:/usr/libexec/java_home -v 1.8.0_261/bin:/Users/searro/Library/Android/sdk/emulator:/Users/searro/Library/Android/sdk/tools:/Users/searro/Library/Android/sdk/tools/bin:/Users/searro/Library/Android/sdk/platform-tools:/Users/searro/Library/Android/sdk:/Library/Java/JavaVirtualMachines/jdk1.8.0_261.jdk/Contents/Home/bin:/usr/local/Cellar/postgresql/13.1/bin:/Users/searro/repos/api-as400/node_modules:/Users/searro/development/flutter/bin:/Users/searro/Library/Android/sdk/emulator:/Users/searro/Library/Android/sdk/tools:/Users/searro/Library/Android/sdk/tools/bin:/Users/searro/Library/Android/sdk/platform-tools
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+GOPATH = /Users/searro/go
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+LDFLAGS = -L/usr/local/opt/php@7.3/lib
+# environment
+ANDROID_HOME = /Users/searro/Library/Android/sdk
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.gWQWFn2Mem/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+PWD = /Users/searro/repos/mercadolibre/mercadolibre
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+GOMODCACHE = /Users/searro/go/pkg/mod
+# environment
+HOME = /Users/searro
+# default
+MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
+# environment
+VSCODE_CLI = 1
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/searro/Library/Application Support/Code/CachedData/da15b6fd3ef856477bf6f4fb29ba1b7af717770d
+# environment
+LOGNAME = searro
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+ZSH = /Users/searro/.oh-my-zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# environment
+COLORTERM = truecolor
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+LC_TERMINAL = iTerm2
+# environment
+SHLVL = 3
+# environment
+JAVA_HOME = /Library/Java/JavaVirtualMachines/jdk1.8.0_261.jdk/Contents/Home
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = searro
+# makefile
+.DEFAULT_GOAL := local
+# default
+MAKECMDGOALS := all
+# environment
+TERM_SESSION_ID = w0t1p0:33E82D9F-3AD8-408F-BBFF-EF9E82C28FA1
+# environment
+LESS = -R
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# default
+MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# environment
+TERM_PROGRAM = iTerm.app
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/pd/303dbgt57d1249qb5pgp2cnw0000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/searro/Library/Application Support/Code/1.67.1-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+TERM_PROGRAM_VERSION = 3.4.15
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.88373920.88373926.43E35D87-980B-4E18-BC48-A6BFF9CFD64E
+# environment
+LC_TERMINAL_VERSION = 3.4.15
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+ITERM_SESSION_ID = w0t1p0:33E82D9F-3AD8-408F-BBFF-EF9E82C28FA1
+# environment
+COLORFGBG = 7;0
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x8
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# environment
+ITERM_PROFILE = Default
+# environment
+PAGER = less
+# environment
+ANDROID_SDK_ROOT = /Users/searro/Library/Android/sdk
+# environment
+LC_ALL = C
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+ANDROID_AVD_HOME = /Users/searro/.android/avd
+# environment
+MAKELEVEL := 0
+# environment
+LANG = C
+# environment
+TERM = xterm-256color
+# environment
+VSCODE_PID = 62414
+# makefile (from `Makefile', line 58)
+FILES := c9e41e63689c fc4ecedf50db 2bf3795176dc 0aa774272942 f5771daab907 b7bb2737ee46 63d923f84a91 8e9f88d13f37
+# variable set hash-table stats:
+# Load=90/1024=9%, Rehash=0, Collisions=5/116=4%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777221, inode 89350814): 16 files, no impossibilities.
+
+# 16 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+down-local:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 61):
+	docker stop $(FILES)
+	docker rm $(FILES)
+	
+
+# Not a target:
+all:
+#  Command-line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+ 
+
+.PHONY: docker local test
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+local:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 8):
+	echo "Starting local environment"
+	docker-compose -f docker-compose.local.yml up --build
+	
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-13 13:09:00
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+test:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 30):
+	go test -cover ./...
+	
+
+build:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 27):
+	go build ./cmd/api/main.go
+	
+
+run-linter:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 16):
+	echo "Starting linters"
+	golangci-lint run ./...
+	
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+run:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 24):
+	go run ./cmd/api/main.go
+	
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 65):
+	docker system prune -f
+	
+
+docker:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+tidy:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 42):
+	go mod tidy
+	go mod vendor
+	
+
+logs-local:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 68):
+	docker logs -f $(FILES)
+	
+
+deps-reset:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 37):
+	git checkout -- go.mod
+	go mod tidy
+	go mod vendor
+	
+
+deps-cleancache:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 52):
+	go clean -modcache
+	
+
+deps-upgrade:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 46):
+	# go get $(go list -f '{{if not (or .Main .Indirect)}}{{.Path}}{{end}}' -m all)
+	go get -u -t -d -v ./...
+	go mod tidy
+	go mod vendor
+	
+
+# files hash-table stats:
+# Load=18/1024=2%, Rehash=0, Collisions=0/33=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Sun May 15 19:06:04 2022
+
+ 
