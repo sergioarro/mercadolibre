@@ -31,7 +31,7 @@ func NewLocationUseCase(cfg *config.Config, locationRepo location.Repository, lo
 	return &locationUC{cfg: cfg, locationRepo: locationRepo, logger: logger}
 }
 
-func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites models.Request) (*models.Ship, error) {
+func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites models.Request) (*models.Response, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationUC.GetLocationBySatellites")
 	defer span.Finish()
 
@@ -41,14 +41,28 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 	}
 
 	position := models.Position{X: -100.0, Y: 75.5}
-	n := &models.Ship{
+	n := &models.Response{
 		Position: position,
 		Message:  "este es un mensaje secreto",
 	}
+
+	/*n, err := u.locationRepo.GetLocationBySatellites(ctx, satellites)
+	if err != nil {
+		return nil, err
+	}*/
 
 	return n, nil
 }
 
 func (u *locationUC) getKeyWithPrefix(newsID string) string {
 	return fmt.Sprintf("%s: %s", basePrefix, newsID)
+}
+
+//get all the satellites that are operating
+func (u *locationUC) getAllSatellitesInService() (SatellitesInService []models.Satellite) {
+	SatellitesInService = append(SatellitesInService,
+		models.Satellite{Name: "Kenobi", Position: models.Position{X: -500, Y: -200}},
+		models.Satellite{Name: "Skywalker", Position: models.Position{X: 100, Y: -100}},
+		models.Satellite{Name: "Sato", Position: models.Position{X: 500, Y: 100}})
+	return
 }

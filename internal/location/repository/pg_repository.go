@@ -22,11 +22,11 @@ func NewLocationRepository(db *sqlx.DB) location.Repository {
 }
 
 // Get single location by id
-func (r *locationRepo) GetLocationBySatellites(ctx context.Context, location models.Request) (*models.Ship, error) {
+func (r *locationRepo) GetLocationBySatellites(ctx context.Context, location models.Request) (*models.Response, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.GetLocationByID")
 	defer span.Finish()
 
-	n := &models.Ship{}
+	n := &models.Response{}
 	if err := r.db.GetContext(ctx, n, getLocationBySatellites, location); err != nil {
 		return nil, errors.Wrap(err, "locationRepo.GetLocationByID.GetContext")
 	}

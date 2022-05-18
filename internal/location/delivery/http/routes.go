@@ -9,5 +9,5 @@ import (
 
 // Map news routes
 func MapLocationRoutes(locationGroup *echo.Group, h location.Handlers, mw *middleware.MiddlewareManager) {
-	locationGroup.GET("/topsecret", h.GetLocationBySatellites())
+	locationGroup.POST("/topsecret", h.GetLocationBySatellites())
 }
