@@ -29,10 +29,37 @@ type locationUC struct {
 }
 
 var satellitesPositions []models.Position
+var satellitePosition models.Position
 
 // Location UseCase constructor
 func NewLocationUseCase(cfg *config.Config, locationRepo location.Repository, logger logger.Logger) location.UseCase {
 	return &locationUC{cfg: cfg, locationRepo: locationRepo, logger: logger}
+}
+
+func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName string, satellite models.Satellite) (*models.Response, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "locationUC.PostTopSecretSplit")
+	defer span.Finish()
+
+	if satellite.Distance == 0 || len(satellite.Message) == 0 {
+		err := errors.New("Request not valid")
+		return nil, httpErrors.NewRestError(http.StatusPreconditionRequired, "Request not valid", errors.Wrap(err, "locationUC.PostTopSecretSplit"))
+	}
+
+	var satellitesOperating []models.Satellite = u.getAllSatellitesInService()
+	satellitePosition = searchSatellite(satellite, satellitesOperating)
+	u.logger.Debug("searchSatellite position : %s ", satellitePosition)
+	if satellitePosition.X == 0 {
+		err := errors.New("Satellite does not exist")
+		return nil, httpErrors.NewRestError(http.StatusPreconditionRequired, "Satellite does not exist", errors.Wrap(err, "locationUC.PostTopSecretSplit"))
+	}
+
+	position := models.Position{X: 20, Y: 20}
+	n := &models.Response{
+		Position: position,
+		Message:  "message",
+	}
+
+	return n, nil
 }
 
 func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites models.Request) (*models.Response, error) {
@@ -68,7 +95,7 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 		Message:  message,
 	}
 
-	return n, err
+	return n, nil
 }
 
 func (u *locationUC) getKeyWithPrefix(newsID string) string {
@@ -93,6 +120,15 @@ func getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, pos
 		}
 	}
 	return coordinates
+}
+
+func searchSatellite(satellite models.Satellite, posotionStellites []models.Satellite) (coordinate models.Position) {
+	for _, satelliteOfTotal := range posotionStellites {
+		if strings.ToUpper(satellite.Name) == strings.ToUpper(satelliteOfTotal.Name) {
+			coordinate = models.Position{X: satelliteOfTotal.Position.X, Y: satelliteOfTotal.Position.Y}
+		}
+	}
+	return coordinate
 }
 
 // Función que devuelve la localizacion del emisor en sus coordenadas

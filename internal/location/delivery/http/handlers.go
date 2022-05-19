@@ -60,7 +60,33 @@ func (h locationHandlers) GetLocationBySatellites() echo.HandlerFunc {
 
 func (h locationHandlers) PostTopSecretSplit() echo.HandlerFunc {
 
-	return nil
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "locationHandlers.PostTopSecretSplit")
+		defer span.Finish()
+
+		satelliteName := c.Param("satellite_name")
+		h.logger.Debug("1 Nombre del Satelite : ", satelliteName)
+		payload := new(models.Satellite)
+		if err := c.Bind(payload); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		h.logger.Debug("2 payload body request : ", payload)
+
+		/*if len(strings.TrimSpace(satelliteName)) == 0 {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}*/
+
+		shipPositionAndMessage, err := h.locationUC.PostTopSecretSplit(ctx, satelliteName, *payload)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, shipPositionAndMessage)
+	}
 }
 
 func (h locationHandlers) GetTopSecretSplit() echo.HandlerFunc {
