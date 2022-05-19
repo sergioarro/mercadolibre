@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
 
@@ -14,7 +15,6 @@ import (
 	"mercadolibre/internal/models"
 	"mercadolibre/pkg/httpErrors"
 	"mercadolibre/pkg/logger"
-	"mercadolibre/pkg/utils"
 )
 
 const (
@@ -32,7 +32,7 @@ var NoSolutionLocation = fmt.Errorf("No solution for localization.")
 var CoordinatesError = fmt.Errorf("The number of coordinates to analyze is incorrect. It must be one, two, or three maximum coordinates.")
 var NoSolutionMessages = fmt.Errorf("The message cannot be decrypted.")
 
-var SatellCoordinates []utils.Point
+var satellitesPositions []models.Position
 
 // Location UseCase constructor
 func NewLocationUseCase(cfg *config.Config, locationRepo location.Repository, logger logger.Logger) location.UseCase {
@@ -57,21 +57,21 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 	u.logger.Debug("distances : %s ", distances)
 	u.logger.Debug("messages : %s ", messages)
 
-	//var satellitesOperating []models.Satellite = u.getAllSatellitesInService()
-	//SatellCoordinates = getPositionOfOperationalSatellites(satellites.RequestSatellites, satellitesOperating)
+	var satellitesOperating []models.Satellite = u.getAllSatellitesInService()
+	satellitesPositions = getPositionOfOperationalSatellites(satellites.RequestSatellites, satellitesOperating)
 
 	x, y, err := GetLocation(distances...)
 	if err != nil {
 		return nil, err
 	}
 
+	message := GetMessage(messages...)
 	position := models.Position{X: x, Y: y}
 	n := &models.Response{
 		Position: position,
-		Message:  "este es un mensaje secreto",
+		Message:  message,
 	}
 
-	//message, errmsg := GetMessage(messages...)
 	/*n, err := u.locationRepo.GetLocationBySatellites(ctx, satellites)
 	if err != nil {
 		return nil, err
@@ -93,66 +93,57 @@ func (u *locationUC) getAllSatellitesInService() (SatellitesInService []models.S
 	return
 }
 
-func getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, posotionStellites []models.Satellite) (coordinates []utils.Point) {
+func getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, posotionStellites []models.Satellite) (coordinates []models.Position) {
 	for _, satellite := range shipToSatellites {
 		for _, satelliteOfTotal := range posotionStellites {
 			if strings.ToUpper(satellite.Name) == strings.ToUpper(satelliteOfTotal.Name) {
-				coordinates = append(coordinates, utils.Point{X: satelliteOfTotal.Position.X, Y: satelliteOfTotal.Position.Y})
+				coordinates = append(coordinates, models.Position{X: satelliteOfTotal.Position.X, Y: satelliteOfTotal.Position.Y})
 			}
 		}
 	}
 	return coordinates
 }
 
+// Función que devuelve la localizacion del emisor en sus coordenadas
 func GetLocation(distances ...float64) (x, y float64, err error) {
+	// Variables a utilizar para uso del algoritmo
+	d1 := distances[0]
+	d2 := distances[1]
+	d3 := distances[2]
+	// Posiciones actuales de los satelites
+	i1 := satellitesPositions[0].X
+	i2 := satellitesPositions[1].X
+	i3 := satellitesPositions[2].X
+	j1 := satellitesPositions[0].Y
+	j2 := satellitesPositions[1].Y
+	j3 := satellitesPositions[2].Y
 
-	countCoordinates := len(SatellCoordinates)
-	p1 := utils.Point{}
-	p2 := utils.Point{}
-	p3 := utils.Point{}
+	// Se calcula el valor de las coordenadas x,y según algoritmo de Trilateración
+	x = (((math.Pow(d1, 2)-math.Pow(d2, 2))+(math.Pow(i2, 2)-math.Pow(i1, 2))+(math.Pow(j2, 2)-math.Pow(j1, 2)))*(2*j3-2*j2) - ((math.Pow(d2, 2)-math.Pow(d3, 2))+(math.Pow(i3, 2)-math.Pow(i2, 2))+(math.Pow(j3, 2)-math.Pow(j2, 2)))*(2*j2-2*j1)) / ((2*i2-2*i3)*(2*j2-2*j1) - (2*i1-2*i2)*(2*j3-2*j2))
 
-	switch countCoordinates {
-	case 1:
-		p1 = SatellCoordinates[0]
-		p1.R = distances[0]
-	case 2:
-		p1 = SatellCoordinates[0]
-		p1.R = distances[0]
-		p2 = SatellCoordinates[1]
-		p2.R = distances[1]
-	case 3:
-		p1 = SatellCoordinates[0]
-		p1.R = distances[0]
-		p2 = SatellCoordinates[1]
-		p2.R = distances[1]
-		p3 = SatellCoordinates[2]
-		p3.R = distances[2]
-	default:
-		return 9999999999, 9999999999, httpErrors.NewRestError(http.StatusBadRequest, CoordinatesError.Error(), errors.Wrap(err, "locationUC.GetLocationBySatellites.GetLocation"))
-	}
+	y = ((math.Pow(d1, 2) - math.Pow(d2, 2)) + (math.Pow(i2, 2) - math.Pow(i1, 2)) + (math.Pow(j2, 2) - math.Pow(j1, 2)) + x*(2*i1-2*i2)) / (2*j2 - 2*j1)
 
-	ex := utils.Divide(utils.Subtract(p2, p1), utils.Normalize(utils.Subtract(p2, p1)))
-
-	i := utils.Dot(ex, utils.Subtract(p3, p1))
-	a := utils.Subtract(utils.Subtract(p3, p1), utils.Multiply(ex, i))
-	ey := utils.Divide(a, utils.Normalize(a))
-	d := utils.Normalize(utils.Subtract(p2, p1))
-	j := utils.Dot(ey, utils.Subtract(p3, p1))
-
-	//calculate X and Y for the coordinate
-	x = ((p1.R * p1.R) - (p2.R * p2.R) + (d * d)) / (2 * d)
-	y = (utils.Square(p1.R)-utils.Square(p3.R)+utils.Square(i)+utils.Square(j))/(2*j) - (i/j)*x
-
-	if x == 0 && y == 0 {
-		return 9999999999, 9999999999, NoSolutionLocation
-	}
-	location := utils.Add(p1, utils.Add(utils.Multiply(ex, x), utils.Multiply(ey, y)))
-	location = utils.RoundUp(location, 3)
-
-	return location.X, location.Y, nil
+	return x, y, nil
 }
 
-func GetMessage(messages ...[]string) (msg string) {
-
-	return "msg"
+func GetMessage(messages ...[]string) (mssg string) {
+	var msg []string
+	for i := 0; i < len(messages[0]); i++ {
+		for j := 0; j < len(messages); j++ {
+			// control longitud mensajes
+			if len(messages[0]) != len(messages[j]) {
+				return ""
+			}
+			// control de mensajes vacios y repetidos
+			if messages[j][i] != "" && (len(msg) == 0 || msg[len(msg)-1] != messages[j][i]) {
+				msg = append(msg, messages[j][i])
+			}
+		}
+	}
+	// control mensaje vacio
+	if len(msg) > 0 {
+		return strings.Join(msg, " ")
+	} else {
+		return ""
+	}
 }
