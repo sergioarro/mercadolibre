@@ -57,3 +57,13 @@ func (h locationHandlers) GetLocationBySatellites() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, shipPositionAndMessage)
 	}
 }
+
+func (h locationHandlers) PostTopSecretSplit() echo.HandlerFunc {
+
+	return nil
+}
+
+func (h locationHandlers) GetTopSecretSplit() echo.HandlerFunc {
+
+	return nil
+}
