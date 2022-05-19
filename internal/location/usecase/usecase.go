@@ -28,10 +28,6 @@ type locationUC struct {
 	logger       logger.Logger
 }
 
-var NoSolutionLocation = fmt.Errorf("No solution for localization.")
-var CoordinatesError = fmt.Errorf("The number of coordinates to analyze is incorrect. It must be one, two, or three maximum coordinates.")
-var NoSolutionMessages = fmt.Errorf("The message cannot be decrypted.")
-
 var satellitesPositions []models.Position
 
 // Location UseCase constructor
@@ -71,11 +67,6 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 		Position: position,
 		Message:  message,
 	}
-
-	/*n, err := u.locationRepo.GetLocationBySatellites(ctx, satellites)
-	if err != nil {
-		return nil, err
-	}*/
 
 	return n, err
 }
