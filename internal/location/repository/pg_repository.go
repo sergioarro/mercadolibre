@@ -5,6 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
+
 	"github.com/pkg/errors"
 
 	"mercadolibre/internal/location"
