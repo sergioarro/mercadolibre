@@ -9,7 +9,6 @@ import (
 	"github.com/pkg/errors"
 
 	"mercadolibre/internal/location"
-	"mercadolibre/internal/models"
 )
 
 // Location Repository
@@ -22,15 +21,15 @@ func NewLocationRepository(db *sqlx.DB) location.Repository {
 	return &locationRepo{db: db}
 }
 
-// Get single location by id
-func (r *locationRepo) GetLocationBySatellites(ctx context.Context, location models.Request) (*models.Response, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.GetLocationByID")
+// FindSatelliteByName
+func (r *locationRepo) FindSatelliteByName(ctx context.Context, name string) (int, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.FindSatelliteByName")
 	defer span.Finish()
 
-	n := &models.Response{}
-	if err := r.db.GetContext(ctx, n, getLocationBySatellites, location); err != nil {
-		return nil, errors.Wrap(err, "locationRepo.GetLocationByID.GetContext")
+	var totalCount int
+	if err := r.db.GetContext(ctx, &totalCount, getSatelliteByNameQuery, name); err != nil {
+		return 0, errors.Wrap(err, "locationRepo.FindSatelliteByName.GetContext")
 	}
 
-	return n, nil
+	return totalCount, nil
 }

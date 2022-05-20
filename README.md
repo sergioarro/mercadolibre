@@ -24,13 +24,21 @@ El servicio de inteligencia rebelde ha detectado un llamado de auxilio de una na
 * [Docker](https://www.docker.com/) - Docker
 
 ### Local development usage:
+    make tidy
     make local // run all containers
+    make migrate_up // Dependencia make local (contenedor de postgres) Crea modelo necesario en Data Base
     make run
     make down-local // stop and rm dockers containers
     make deps-cleancache // go clean -modcache
+
+## Initial tables in postgres
+cat ./migrations/01_create_initial_tables.up.sql | docker exec -i api_postgesql psql -U postgres -d satellite_db
+
 
 
 
 http://localhost:5001/api/v1/health
 
 http://localhost:5001/api/v1/location/topsecret
+
+http://localhost:5001/api/v1/location/topsecret_split/:satellite_name
