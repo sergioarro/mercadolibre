@@ -8,5 +8,5 @@ import (
 
 // Location Repository
 type Repository interface {
-	GetLocationBySatellites(ctx context.Context, location models.Request) (*models.Response, error)
+	FindSatelliteByName(ctx context.Context, name string) (*models.Satellite, error)
 }

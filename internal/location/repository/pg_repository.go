@@ -22,15 +22,15 @@ func NewLocationRepository(db *sqlx.DB) location.Repository {
 	return &locationRepo{db: db}
 }
 
-// Get single location by id
-func (r *locationRepo) GetLocationBySatellites(ctx context.Context, location models.Request) (*models.Response, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.GetLocationByID")
+// FindSatelliteByName
+func (r *locationRepo) FindSatelliteByName(ctx context.Context, name string) (*models.Satellite, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.FindSatelliteByName")
 	defer span.Finish()
 
-	n := &models.Response{}
-	if err := r.db.GetContext(ctx, n, getLocationBySatellites, location); err != nil {
-		return nil, errors.Wrap(err, "locationRepo.GetLocationByID.GetContext")
+	satellite := &models.Satellite{}
+	if err := r.db.QueryRowxContext(ctx, getSatelliteByNameQuery, name).StructScan(satellite); err != nil {
+		return nil, errors.Wrap(err, "locationRepo.FindSatelliteByName.QueryRowxContext")
 	}
 
-	return n, nil
+	return satellite, nil
 }

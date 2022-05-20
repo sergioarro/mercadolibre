@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"net/http"
 	"strings"
@@ -15,11 +14,6 @@ import (
 	"mercadolibre/internal/models"
 	"mercadolibre/pkg/httpErrors"
 	"mercadolibre/pkg/logger"
-)
-
-const (
-	basePrefix    = "api-location:"
-	cacheDuration = 3600
 )
 
 type locationUC struct {
@@ -39,19 +33,27 @@ func NewLocationUseCase(cfg *config.Config, locationRepo location.Repository, lo
 func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName string, satellite models.Satellite) (*models.Response, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationUC.PostTopSecretSplit")
 	defer span.Finish()
-
+	satellite.Name = satelliteName
 	if satellite.Distance == 0 || len(satellite.Message) == 0 {
 		err := errors.New("Request not valid")
 		return nil, httpErrors.NewRestError(http.StatusPreconditionRequired, "Request not valid", errors.Wrap(err, "locationUC.PostTopSecretSplit"))
 	}
 
 	var satellitesOperating []models.Satellite = u.getAllSatellitesInService()
-	satellitePosition = searchSatellite(satellite, satellitesOperating)
+	satellitePosition = u.searchSatellite(satellite, satellitesOperating)
 	u.logger.Debug("searchSatellite position : %s ", satellitePosition)
 	if satellitePosition.X == 0 {
 		err := errors.New("Satellite does not exist")
 		return nil, httpErrors.NewRestError(http.StatusPreconditionRequired, "Satellite does not exist", errors.Wrap(err, "locationUC.PostTopSecretSplit"))
 	}
+
+	satellite.Position = satellitePosition
+	var updateSatellite *models.Satellite
+	updateSatellite, err := u.locationRepo.FindSatelliteByName(ctx, satelliteName)
+	if err != nil {
+		return nil, err
+	}
+	u.logger.Debug("FindSatelliteByName : ", updateSatellite)
 
 	position := models.Position{X: 20, Y: 20}
 	n := &models.Response{
@@ -81,7 +83,7 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 	u.logger.Debug("messages : %s ", messages)
 
 	var satellitesOperating []models.Satellite = u.getAllSatellitesInService()
-	satellitesPositions = getPositionOfOperationalSatellites(satellites.RequestSatellites, satellitesOperating)
+	satellitesPositions = u.getPositionOfOperationalSatellites(satellites.RequestSatellites, satellitesOperating)
 
 	x, y, err := GetLocation(distances...)
 	if err != nil {
@@ -98,10 +100,6 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 	return n, nil
 }
 
-func (u *locationUC) getKeyWithPrefix(newsID string) string {
-	return fmt.Sprintf("%s: %s", basePrefix, newsID)
-}
-
 //get all the satellites that are operating
 func (u *locationUC) getAllSatellitesInService() (SatellitesInService []models.Satellite) {
 	SatellitesInService = append(SatellitesInService,
@@ -111,7 +109,7 @@ func (u *locationUC) getAllSatellitesInService() (SatellitesInService []models.S
 	return
 }
 
-func getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, posotionStellites []models.Satellite) (coordinates []models.Position) {
+func (u *locationUC) getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, posotionStellites []models.Satellite) (coordinates []models.Position) {
 	for _, satellite := range shipToSatellites {
 		for _, satelliteOfTotal := range posotionStellites {
 			if strings.ToUpper(satellite.Name) == strings.ToUpper(satelliteOfTotal.Name) {
@@ -122,7 +120,7 @@ func getPositionOfOperationalSatellites(shipToSatellites []models.Satellite, pos
 	return coordinates
 }
 
-func searchSatellite(satellite models.Satellite, posotionStellites []models.Satellite) (coordinate models.Position) {
+func (u *locationUC) searchSatellite(satellite models.Satellite, posotionStellites []models.Satellite) (coordinate models.Position) {
 	for _, satelliteOfTotal := range posotionStellites {
 		if strings.ToUpper(satellite.Name) == strings.ToUpper(satelliteOfTotal.Name) {
 			coordinate = models.Position{X: satelliteOfTotal.Position.X, Y: satelliteOfTotal.Position.Y}
