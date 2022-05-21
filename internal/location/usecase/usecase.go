@@ -48,12 +48,19 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 	}
 
 	satellite.Position = satellitePosition
-
+	u.logger.Debug("PostTopSecretSplit satellite : ", satellite)
 	countSatellite, err := u.locationRepo.FindSatelliteByName(ctx, satelliteName)
 	if err != nil {
 		return nil, err
 	}
 	u.logger.Debug("FindSatelliteByName countSatellite : ", countSatellite)
+
+	if countSatellite == 0 {
+		err := u.locationRepo.Create(ctx, satellite)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	position := models.Position{X: 20, Y: 20}
 	n := &models.Response{
@@ -62,6 +69,11 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 	}
 
 	return n, nil
+}
+
+func (u *locationUC) addSatellite(satellite models.Satellite) error {
+
+	return nil
 }
 
 func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites models.Request) (*models.Response, error) {
