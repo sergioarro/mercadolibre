@@ -5,7 +5,6 @@ import (
 	"math"
 	"net/http"
 	"strings"
-	"sync"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
@@ -55,18 +54,17 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 		return nil, err
 	}
 	u.logger.Debug("FindSatelliteByName countSatellite : ", countSatellite)
-	var wg sync.WaitGroup
-	wg.Add(1)
+
 	if countSatellite == 0 {
-		err := u.locationRepo.Create(ctx, satellite, &wg)
+		err := u.locationRepo.Create(ctx, satellite)
 		if err != nil {
 			return nil, err
 		}
 
 	}
-	wg.Wait()
+
 	var satellites []models.Satellite
-	satellites, err = u.locationRepo.GetAllSatellites(ctx, &wg)
+	satellites, err = u.locationRepo.GetAllSatellites(ctx)
 
 	if err != nil {
 		return nil, err
@@ -203,15 +201,13 @@ func GetMessage(messages ...[]string) (mssg string) {
 }
 
 func (u *locationUC) GetTopSecretSplit(ctx context.Context) (*models.Response, error) {
-	var wg sync.WaitGroup
-	wg.Add(1)
 	var satellites []models.Satellite
-	satellites, err := u.locationRepo.GetAllSatellites(ctx, &wg)
+	satellites, err := u.locationRepo.GetAllSatellites(ctx)
 
 	if err != nil {
 		return nil, err
 	}
-	wg.Wait()
+
 	var modelRequest models.Request
 	modelRequest.RequestSatellites = satellites
 	u.logger.Debug("GetTopSecretSplit RequestSatellites %+v : ", modelRequest.RequestSatellites)

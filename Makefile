@@ -76,6 +76,9 @@ down-local:
 	docker stop $(FILES)
 	docker rm $(FILES)
 
+down-db:
+	rm -rf pgdata
+
 clean:
 	docker system prune -f
 
