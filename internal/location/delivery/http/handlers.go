@@ -74,11 +74,6 @@ func (h locationHandlers) PostTopSecretSplit() echo.HandlerFunc {
 
 		h.logger.Debug("2 payload body request : ", payload)
 
-		/*if len(strings.TrimSpace(satelliteName)) == 0 {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}*/
-
 		shipPositionAndMessage, err := h.locationUC.PostTopSecretSplit(ctx, satelliteName, *payload)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -90,6 +85,18 @@ func (h locationHandlers) PostTopSecretSplit() echo.HandlerFunc {
 }
 
 func (h locationHandlers) GetTopSecretSplit() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "locationHandlers.GetTopSecretSplit")
+		defer span.Finish()
 
-	return nil
+		shipPositionAndMessage, err := h.locationUC.GetTopSecretSplit(ctx)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, shipPositionAndMessage)
+
+	}
+
 }

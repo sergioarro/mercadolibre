@@ -5,6 +5,7 @@ import (
 	"math"
 	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
@@ -54,17 +55,18 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 		return nil, err
 	}
 	u.logger.Debug("FindSatelliteByName countSatellite : ", countSatellite)
-
+	var wg sync.WaitGroup
+	wg.Add(1)
 	if countSatellite == 0 {
-		err := u.locationRepo.Create(ctx, satellite)
+		err := u.locationRepo.Create(ctx, satellite, &wg)
 		if err != nil {
 			return nil, err
 		}
 
 	}
-
+	wg.Wait()
 	var satellites []models.Satellite
-	satellites, err = u.locationRepo.GetAllSatellites(ctx)
+	satellites, err = u.locationRepo.GetAllSatellites(ctx, &wg)
 
 	if err != nil {
 		return nil, err
@@ -79,11 +81,6 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 	}
 
 	return shipPositionAndMessage, nil
-}
-
-func (u *locationUC) addSatellite(satellite models.Satellite) error {
-
-	return nil
 }
 
 func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites models.Request) (*models.Response, error) {
@@ -203,4 +200,25 @@ func GetMessage(messages ...[]string) (mssg string) {
 	} else {
 		return ""
 	}
+}
+
+func (u *locationUC) GetTopSecretSplit(ctx context.Context) (*models.Response, error) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+	var satellites []models.Satellite
+	satellites, err := u.locationRepo.GetAllSatellites(ctx, &wg)
+
+	if err != nil {
+		return nil, err
+	}
+	wg.Wait()
+	var modelRequest models.Request
+	modelRequest.RequestSatellites = satellites
+	u.logger.Debug("GetTopSecretSplit RequestSatellites %+v : ", modelRequest.RequestSatellites)
+	shipPositionAndMessage, err := u.CalculatePosition(modelRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return shipPositionAndMessage, nil
 }

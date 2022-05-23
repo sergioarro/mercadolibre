@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"sync"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
@@ -66,7 +67,8 @@ func (r *locationRepo) FindSatelliteByName(ctx context.Context, name string) (in
 	return totalCount, nil
 }
 
-func (r *locationRepo) GetAllSatellites(ctx context.Context) ([]models.Satellite, error) {
+func (r *locationRepo) GetAllSatellites(ctx context.Context, wg *sync.WaitGroup) ([]models.Satellite, error) {
+	defer wg.Done()
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.GetAllSatellites")
 	defer span.Finish()
 
@@ -97,7 +99,8 @@ func (r *locationRepo) GetAllSatellites(ctx context.Context) ([]models.Satellite
 	return satellites, nil
 }
 
-func (r *locationRepo) Create(ctx context.Context, satellite models.Satellite) error {
+func (r *locationRepo) Create(ctx context.Context, satellite models.Satellite, wg *sync.WaitGroup) error {
+	defer wg.Done()
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationRepo.Create")
 	defer span.Finish()
 
