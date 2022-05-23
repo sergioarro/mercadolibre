@@ -87,10 +87,19 @@ POST http://localhost:5001/api/v1/location/topsecret_split/:satellite_name
       "message": ["","","un","","super secreto"]
     }
 
-    REQUEST 404:
+    RESPONSE 404:
     {
         "status": 404,
         "error": "Not enough data"
+    }
+    
+    RESPONSE OK:
+    {
+        "position": {
+            "x": -471.6609125,
+            "y": 1525.764225
+        },
+        "message": "este es un mensaje privado"
     }
 
 
