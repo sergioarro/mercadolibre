@@ -9,4 +9,5 @@ import (
 type Repository interface {
 	FindSatelliteByName(ctx context.Context, name string) (int, error)
 	Create(ctx context.Context, satellite models.Satellite) error
+	GetAllSatellites(ctx context.Context) ([]models.Satellite, error)
 }

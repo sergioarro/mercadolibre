@@ -60,15 +60,25 @@ func (u *locationUC) PostTopSecretSplit(ctx context.Context, satelliteName strin
 		if err != nil {
 			return nil, err
 		}
+
 	}
 
-	position := models.Position{X: 20, Y: 20}
-	n := &models.Response{
-		Position: position,
-		Message:  "message",
+	var satellites []models.Satellite
+	satellites, err = u.locationRepo.GetAllSatellites(ctx)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return n, nil
+	var modelRequest models.Request
+	modelRequest.RequestSatellites = satellites
+	u.logger.Debug("PostTopSecretSplit RequestSatellites %+v : ", modelRequest.RequestSatellites)
+	shipPositionAndMessage, err := u.CalculatePosition(modelRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return shipPositionAndMessage, nil
 }
 
 func (u *locationUC) addSatellite(satellite models.Satellite) error {
@@ -80,9 +90,19 @@ func (u *locationUC) GetLocationBySatellites(ctx context.Context, satellites mod
 	span, ctx := opentracing.StartSpanFromContext(ctx, "locationUC.GetLocationBySatellites")
 	defer span.Finish()
 
-	if len(satellites.RequestSatellites) > 3 {
-		err := errors.New("Too many satellities")
-		return nil, httpErrors.NewRestError(http.StatusPreconditionRequired, "Too many satellities", errors.Wrap(err, "locationUC.GetLocationBySatellites.ValidToManySatellities"))
+	n, err := u.CalculatePosition(satellites)
+	if err != nil {
+		return nil, err
+	}
+
+	return n, nil
+}
+
+func (u *locationUC) CalculatePosition(satellites models.Request) (*models.Response, error) {
+
+	if len(satellites.RequestSatellites) != 3 {
+		err := errors.New("Not enough data")
+		return nil, httpErrors.NewRestError(http.StatusNotFound, "Not enough data", errors.Wrap(err, "locationUC.GetLocationBySatellites.ValidToManySatellities"))
 	}
 
 	distances := make([]float64, 0)
