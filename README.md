@@ -36,13 +36,16 @@ Clonar el repositorio
 ### Local development usage:
     Para correr y levantar de manera rapida el proyecto en local solo se debe seguir estos pasos :
 
-    make tidy
-    make local // run all containers
-    make migrate_up // Dependencia make local (contenedor de postgres) Crea tabla necesaria en DB. Esta la opción manual mas abajo
-    make run
+    1. make tidy
+    2. make local // run all containers
+    3. make migrate_up // Dependencia make local (contenedor de postgres) Crea tabla necesaria en DB. Esta la opción manual mas abajo
+    4. make run
 
     make down-local // stop and rm dockers containers
     make deps-cleancache // go clean -modcache
+    Opcional
+    Si se necesita volver a generar la base de datos deben eliminar la carpeta del proyecto "pgdata"
+    make down-db // Luego volver a subir el proyecto y aplicar paso 3 make migrate_up
 
 ## Initial tables in postgres manual
 cat ./migrations/01_create_initial_tables.up.sql | docker exec -i api_postgesql psql -U postgres -d satellite_db
@@ -51,7 +54,7 @@ cat ./migrations/01_create_initial_tables.up.sql | docker exec -i api_postgesql 
 GET http://localhost:5001/api/v1/health
    
 POST http://localhost:5001/api/v1/location/topsecret
- 
+    
      REQUEST : 
         {
             "satellites": [
@@ -76,10 +79,18 @@ POST http://localhost:5001/api/v1/location/topsecret
 
 POST http://localhost:5001/api/v1/location/topsecret_split/:satellite_name
 
-    REQUEST :
+    Ademas de agregar a la base de datos el satelite que no tiene registrado este retorna y valida si hay un mensaje completo y su posicion y si aun no la tiene retorna 404 Not enough data
+
+    REQUEST OK:
     {
       "distance": 180.0,
       "message": ["","","un","","super secreto"]
+    }
+
+    REQUEST 404:
+    {
+        "status": 404,
+        "error": "Not enough data"
     }
 
 
